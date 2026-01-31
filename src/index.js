@@ -3,12 +3,13 @@ import dotenv from "dotenv";
 import mongoose from "mongoose";
 import {DB_name} from "./constants.js";
 import connectDB from "./db/index.js";
+import { app } from "./app.js";
 
+import express from "express";
 dotenv.config({
     path: './env'
 })
 
-const app = express();
 
 connectDB()
 .then(()=>{
@@ -19,7 +20,7 @@ connectDB()
         console.log("Server Error: ",error);
         throw error;
     });
-} ) 
+}) 
 .catch((error)=>{
     console.log("MongoDb connection failed !!!");
 })

@@ -6,7 +6,7 @@ class ApiError extends Error {
         statusCode,                        // HTTP status code (400, 404, 500, etc.)
         message = "Something Went Wrong",  // Default error message
         errors = [],                       // Extra error details (optional)
-        statck = ""                        // Custom stack trace (optional)
+        stack = ""                        // Custom stack trace (optional)
     ) {
 
         // Call parent Error class constructor with message
@@ -20,8 +20,8 @@ class ApiError extends Error {
         this.errors = errors;           // Array of error details
 
         // If stack trace is provided, use it
-        if (statck) {
-            this.stack = statck;
+        if (stack) {
+            this.stack = stack;
         } 
         // Otherwise, generate stack trace automatically
         else {
