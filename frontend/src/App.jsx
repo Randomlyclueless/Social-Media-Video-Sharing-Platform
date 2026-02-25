@@ -7,15 +7,21 @@ import ChangeAvatar from "./pages/ChangeAvatar";
 import Home from "./pages/Home";
 import Upload from "./pages/Upload";
 import VideoPlayer from "./pages/VideoPlayer";
+import Channel from "./pages/Channel";
 import { useAuth } from "./context/useAuth";
 
 function App() {
   const { user } = useAuth();
 
-  // ✅ ALL hooks together at top
+  // Auth toggle
   const [showRegister, setShowRegister] = useState(false);
+
+  // Navigation state
   const [page, setPage] = useState("home");
+
+  // Selected entities
   const [selectedVideo, setSelectedVideo] = useState(null);
+  const [selectedChannel, setSelectedChannel] = useState(null);
 
   // 🔐 Auth
   if (!user) {
@@ -26,13 +32,17 @@ function App() {
     );
   }
 
-  // 👤 Profile pages
+  // 👤 Profile
   if (page === "profile") {
     return (
       <Profile
         onEdit={() => setPage("edit")}
         onAvatar={() => setPage("avatar")}
         onBack={() => setPage("home")}
+        onChannel={(username) => {
+          setSelectedChannel(username);
+          setPage("channel");
+        }}
       />
     );
   }
@@ -54,8 +64,26 @@ function App() {
   if (page === "player") {
     return (
       <VideoPlayer
-        video={selectedVideo}
+  video={selectedVideo}
+  onBack={() => setPage("home")}
+  onChannel={(username) => {
+    setSelectedChannel(username);
+    setPage("channel");
+  }}
+/>
+    );
+  }
+
+  // 📺 Channel
+  if (page === "channel") {
+    return (
+      <Channel
+        username={selectedChannel}
         onBack={() => setPage("home")}
+        onOpenVideo={(video) => {
+          setSelectedVideo(video);
+          setPage("player");
+        }}
       />
     );
   }
@@ -68,6 +96,10 @@ function App() {
       onOpenVideo={(video) => {
         setSelectedVideo(video);
         setPage("player");
+      }}
+      onChannel={(username) => {
+        setSelectedChannel(username);
+        setPage("channel");
       }}
     />
   );
