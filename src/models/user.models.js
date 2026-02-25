@@ -37,6 +37,18 @@ const userSchema = new Schema({
             ref:"Video"
         }
     ],
+    subscribers:[
+        {
+            type: Schema.Types.ObjectId,
+            ref: "User",
+        },
+    ],
+    following:[
+        {
+            type: Schema.Types.ObjectId,
+            ref:"User",
+        },
+    ],
     password:{
         type:String,
         required:[true,'Password is required']

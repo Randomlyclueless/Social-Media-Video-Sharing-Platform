@@ -1,0 +1,115 @@
+/* =========================
+   TRIZO UI DESIGN SYSTEM
+   ========================= */
+
+/* COLORS */
+:root {
+  --bg-main: #020617;
+  --bg-card: #0f172a;
+  --bg-soft: #020617;
+  --border: #334155;
+
+  --text-main: #ffffff;
+  --text-muted: #94a3b8;
+
+  --primary: #6366f1;
+  --primary-hover: #4f46e5;
+
+  --radius: 10px;
+  --radius-lg: 14px;
+}
+
+/* PAGE */
+.ui-page {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #0f172a, #020617);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* CARD */
+.ui-card {
+  background: var(--bg-card);
+  padding: 2rem;
+  border-radius: var(--radius-lg);
+  width: 100%;
+  max-width: 420px;
+  color: var(--text-main);
+  border: 1px solid var(--border);
+}
+
+/* TITLE */
+.ui-title {
+  font-size: 22px;
+  margin-bottom: 16px;
+}
+
+/* INPUT */
+.ui-input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 12px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: var(--bg-soft);
+  color: var(--text-main);
+}
+
+.ui-textarea {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 12px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: var(--bg-soft);
+  color: var(--text-main);
+  min-height: 90px;
+}
+
+/* BUTTONS */
+.ui-btn {
+  width: 100%;
+  padding: 10px;
+  border-radius: var(--radius);
+  border: none;
+  background: var(--primary);
+  color: white;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.ui-btn:hover {
+  background: var(--primary-hover);
+}
+
+.ui-btn-secondary {
+  background: #334155;
+}
+
+.ui-btn-secondary:hover {
+  background: #475569;
+}
+
+/* BACK BUTTON */
+.ui-back {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: 14px;
+  margin-bottom: 12px;
+}
+
+/* FLEX */
+.ui-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.ui-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

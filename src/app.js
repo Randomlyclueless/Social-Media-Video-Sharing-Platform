@@ -1,49 +1,28 @@
-// Import Express framework
-import express from 'express';
-
-// Import CORS middleware (allows frontend & backend to communicate)
+import express from "express";
 import cors from "cors";
-
-// Import cookie parser (reads cookies from requests)
 import cookieParser from "cookie-parser";
 
-// Create Express application instance
+import userRouter from "./routes/user.routes.js";
+import videoRoutes from "./routes/video.routes.js";
+
+import commentRoutes from "./routes/comment.routes.js";
+
 const app = express();
 
-// Enable CORS with custom configuration
-// Allows requests only from specified frontend origin
-// credentials: true allows cookies to be sent
-app.use(cors({
-    origin: process.env.CORS_ORIGIN,
-    credentials: true
-}));
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+    credentials: true,
+  })
+);
 
-// Middleware to parse incoming JSON data
-// limit prevents large payload attacks
 app.use(express.json({ limit: "16kb" }));
-
-// Middleware to parse URL-encoded form data
-// extended: true allows nested objects
 app.use(express.urlencoded({ extended: true, limit: "16kb" }));
-
-// Serve static files from "public" folder
-// Example: images, css, js files
 app.use(express.static("public"));
-
-// Middleware to parse cookies from request headers
-// Cookies will be available in req.cookies
 app.use(cookieParser());
 
-//Routes
+app.use("/api/v1/users", userRouter);
+app.use("/api/v1/videos", videoRoutes);
+app.use("/api/v1", commentRoutes);
 
-import userRouter from './routes/user.routes.js'
-
-
-
-//route decalaration
-app.use("/api/v1/users",userRouter)
-
- 
-
-// Export app so it can be used in index.js
 export { app };
