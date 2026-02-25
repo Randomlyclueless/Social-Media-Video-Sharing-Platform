@@ -3,7 +3,7 @@ import { useAuth } from "../context/useAuth";
 import axios from "../api/axios";
 import "./Profile.css";
 
-export default function Profile({ onEdit, onAvatar, onBack }) {
+export default function Profile({ onEdit, onAvatar, onBack, onDashboard }) {
   const { user, logout } = useAuth();
   const [tab, setTab] = useState("videos");
   const [following, setFollowing] = useState(false);
@@ -63,7 +63,7 @@ export default function Profile({ onEdit, onAvatar, onBack }) {
               </div>
             </div>
           </div>
-
+        
           <div className="actions">
             <button className="actionBtn primaryBtn" onClick={onAvatar}>
               <span>📸</span> Change Avatar
@@ -71,6 +71,12 @@ export default function Profile({ onEdit, onAvatar, onBack }) {
             <button className="actionBtn secondaryBtn" onClick={onEdit}>
               <span>✏️</span> Edit Profile
             </button>
+            <button
+  className="actionBtn dashboardBtn"
+  onClick={onDashboard}
+>
+  <span>📊</span> Creator Dashboard
+</button>
             <button 
               className={`actionBtn ${following ? 'secondaryBtn' : 'followBtn'}`} 
               onClick={handleFollow}

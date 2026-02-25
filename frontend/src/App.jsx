@@ -8,6 +8,7 @@ import Home from "./pages/Home";
 import Upload from "./pages/Upload";
 import VideoPlayer from "./pages/VideoPlayer";
 import Channel from "./pages/Channel";
+import CreatorDashboard from "./pages/CreatorDashboard";
 import { useAuth } from "./context/useAuth";
 
 function App() {
@@ -43,6 +44,7 @@ function App() {
           setSelectedChannel(username);
           setPage("channel");
         }}
+        onDashboard={() => setPage("dashboard")}
       />
     );
   }
@@ -60,17 +62,30 @@ function App() {
     return <Upload onBack={() => setPage("home")} />;
   }
 
+  // 📊 Dashboard
+  if (page === "dashboard") {
+    return (
+      <CreatorDashboard
+        onBack={() => setPage("profile")}
+        onOpenVideo={(video) => {
+          setSelectedVideo(video);
+          setPage("player");
+        }}
+      />
+    );
+  }
+
   // ▶️ Player
   if (page === "player") {
     return (
       <VideoPlayer
-  video={selectedVideo}
-  onBack={() => setPage("home")}
-  onChannel={(username) => {
-    setSelectedChannel(username);
-    setPage("channel");
-  }}
-/>
+        video={selectedVideo}
+        onBack={() => setPage("home")}
+        onChannel={(username) => {
+          setSelectedChannel(username);
+          setPage("channel");
+        }}
+      />
     );
   }
 
