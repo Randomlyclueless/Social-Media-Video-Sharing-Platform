@@ -11,6 +11,8 @@ import {
   updateUserCoverImage,
   getUserChannelProfile,
   getWatchHistory,
+  subscribeToChannel,
+  unsubscribeFromChannel
 } from "../controllers/user.controller.js";
 
 import { upload } from "../middlewares/multer.middleware.js";
@@ -18,44 +20,52 @@ import { verifyJWT } from "../middlewares/auth.middleware.js";
 
 const router = Router();
 
-// Register
+// ============================
+// Auth
+// ============================
 router.route("/register").post(
   upload.fields([
-    {
-      name: "avatar",
-      maxCount: 1,
-    },
-    {
-      name: "coverImage",
-      maxCount: 1,
-    },
+    { name: "avatar", maxCount: 1 },
+    { name: "coverImage", maxCount: 1 }
   ]),
   registerUser
 );
 
-// Login
 router.route("/login").post(loginUser);
-
-// Secured routes
 router.route("/logout").post(verifyJWT, logoutUser);
 router.route("/refresh-token").post(refreshAccessToken);
 router.route("/change-password").post(verifyJWT, changeCurrentPassword);
 
-// Current user
-router.route("/current-user").get(verifyJWT, getCurrentUser);
-router.route("/current-user").patch(verifyJWT, updateAccountDetails);
+// ============================
+// Current User
+// ============================
+router.route("/current-user")
+  .get(verifyJWT, getCurrentUser)
+  .patch(verifyJWT, updateAccountDetails);
 
-// Avatar & cover
-router
-  .route("/avatar")
+// ============================
+// Profile Media
+// ============================
+router.route("/avatar")
   .patch(verifyJWT, upload.single("avatar"), updateUserAvatar);
 
-router
-  .route("/cover-image")
+router.route("/cover-image")
   .patch(verifyJWT, upload.single("coverImage"), updateUserCoverImage);
 
-// Channel & history
-router.route("/c/:username").get(verifyJWT, getUserChannelProfile);
-router.route("/history").get(verifyJWT, getWatchHistory);
+// ============================
+// Channel
+// ============================
+router.route("/c/:username")
+  .get(verifyJWT, getUserChannelProfile);
+
+router.route("/history")
+  .get(verifyJWT, getWatchHistory);
+
+// ============================
+// Subscription
+// ============================
+router.route("/subscribe/:channelId")
+  .post(verifyJWT, subscribeToChannel)
+  .delete(verifyJWT, unsubscribeFromChannel);
 
 export default router;
