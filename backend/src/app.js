@@ -7,6 +7,8 @@ import videoRoutes from "./routes/video.routes.js";
 
 import commentRoutes from "./routes/comment.routes.js";
 
+import subscriptionRoutes from "./routes/subscription.routes.js";
+
 const app = express();
 
 app.use(
@@ -24,5 +26,6 @@ app.use(cookieParser());
 app.use("/api/v1/users", userRouter);
 app.use("/api/v1/videos", videoRoutes);
 app.use("/api/v1", commentRoutes);
+app.use("/api/v1", subscriptionRoutes);
 
 export { app };

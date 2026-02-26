@@ -103,21 +103,27 @@ export default function VideoPlayer({ video, onBack, onChannel }) {
   };
 
   const toggleSubscribe = async () => {
-    if (!data?.owner?._id) return;
+  if (!data?.owner?._id) return;
 
-    const prev = subscribed;
-    setSubscribed(!prev);
+  const prev = subscribed;
+  setSubscribed(!prev); // optimistic update
 
-    try {
-      if (prev) {
-        await axios.delete(`/users/subscribe/${data.owner._id}`);
-      } else {
-        await axios.post(`/users/subscribe/${data.owner._id}`);
-      }
-    } catch {
-      setSubscribed(prev);
+  try {
+    if (prev) {
+      await axios.delete(`/users/subscribe/${data.owner._id}`);
+    } else {
+      await axios.post(`/users/subscribe/${data.owner._id}`);
     }
-  };
+
+    // ✅ Reload from backend to get source of truth (same as Channel.jsx)
+    const res = await axios.get(`/videos/${data._id}`);
+    const v = res.data.data;
+    setSubscribed(v.owner?.isSubscribed || false);
+
+  } catch {
+    setSubscribed(prev); // revert on error
+  }
+};
 
   const postComment = async () => {
     if (!newComment.trim() || !data) return;
