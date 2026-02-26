@@ -1,5 +1,5 @@
-import Subscription from "../models/subscription.models.js";
-import User from "../models/user.models.js";
+import { Subscription } from "../models/subscription.models.js";
+import { User } from "../models/user.models.js";
 
 // Subscribe
 export const subscribeToChannel = async (req, res) => {
