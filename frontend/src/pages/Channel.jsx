@@ -14,6 +14,7 @@ export default function Channel({ username, onBack, onOpenVideo }) {
 
   const isOwnChannel = user?.username === username;
 
+  // Load channel data
   const loadChannel = useCallback(async () => {
     try {
       setLoading(true);
@@ -36,27 +37,21 @@ export default function Channel({ username, onBack, onOpenVideo }) {
     loadChannel();
   }, [loadChannel]);
 
+  // Subscribe / Unsubscribe
   const handleSubscribe = async () => {
-    if (!creator) return;
+    if (!creator || subscribing) return;
 
     try {
       setSubscribing(true);
 
       if (creator.isSubscribed) {
         await axios.delete(`/users/subscribe/${creator._id}`);
-        setCreator((prev) => ({
-          ...prev,
-          isSubscribed: false,
-          subscribersCount: prev.subscribersCount - 1,
-        }));
       } else {
         await axios.post(`/users/subscribe/${creator._id}`);
-        setCreator((prev) => ({
-          ...prev,
-          isSubscribed: true,
-          subscribersCount: prev.subscribersCount + 1,
-        }));
       }
+
+      // 🔥 Always reload creator from backend (source of truth)
+      await loadChannel();
     } catch (err) {
       console.error("Subscribe error:", err);
     } finally {
@@ -65,8 +60,9 @@ export default function Channel({ username, onBack, onOpenVideo }) {
   };
 
   const formatNumber = (num) => {
-    if (num >= 1000000) return (num / 1000000).toFixed(1) + 'M';
-    if (num >= 1000) return (num / 1000).toFixed(1) + 'K';
+    if (!num) return 0;
+    if (num >= 1000000) return (num / 1000000).toFixed(1) + "M";
+    if (num >= 1000) return (num / 1000).toFixed(1) + "K";
     return num;
   };
 
@@ -74,7 +70,9 @@ export default function Channel({ username, onBack, onOpenVideo }) {
     return (
       <div className="channel-page">
         <div className="channel-topbar">
-          <button className="back-btn" onClick={onBack}>← Back</button>
+          <button className="back-btn" onClick={onBack}>
+            ← Back
+          </button>
         </div>
         <div className="channel-loading">
           <div className="loading-spinner"></div>
@@ -88,13 +86,17 @@ export default function Channel({ username, onBack, onOpenVideo }) {
     return (
       <div className="channel-page">
         <div className="channel-topbar">
-          <button className="back-btn" onClick={onBack}>← Back</button>
+          <button className="back-btn" onClick={onBack}>
+            ← Back
+          </button>
         </div>
         <div className="channel-error">
           <div className="error-icon">🔍</div>
           <h3>Channel not found</h3>
           <p>The channel you're looking for doesn't exist</p>
-          <button className="back-home-btn" onClick={onBack}>Go Back</button>
+          <button className="back-home-btn" onClick={onBack}>
+            Go Back
+          </button>
         </div>
       </div>
     );
@@ -106,10 +108,7 @@ export default function Channel({ username, onBack, onOpenVideo }) {
       <div className="channel-banner">
         <div className="banner-overlay"></div>
         <button className="back-btn" onClick={onBack}>
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <path d="M19 12H5M12 19l-7-7 7-7" />
-          </svg>
-          Back
+          ← Back
         </button>
       </div>
 
@@ -122,12 +121,16 @@ export default function Channel({ username, onBack, onOpenVideo }) {
         />
 
         <div className="channel-info">
-          <h1 className="channel-name">{creator.fullName || creator.username}</h1>
+          <h1 className="channel-name">
+            {creator.fullName || creator.username}
+          </h1>
           <p className="channel-username">@{creator.username}</p>
-          
+
           <div className="channel-stats">
             <div className="stat-item">
-              <span className="stat-value">{formatNumber(creator.subscribersCount || 0)}</span>
+              <span className="stat-value">
+                {formatNumber(creator.subscribersCount)}
+              </span>
               <span className="stat-label">subscribers</span>
             </div>
             <div className="stat-item">
@@ -135,27 +138,30 @@ export default function Channel({ username, onBack, onOpenVideo }) {
               <span className="stat-label">videos</span>
             </div>
             <div className="stat-item">
-              <span className="stat-value">{formatNumber(creator.totalViews || 0)}</span>
+              <span className="stat-value">
+                {formatNumber(creator.totalViews)}
+              </span>
               <span className="stat-label">views</span>
             </div>
           </div>
 
-          {creator.bio && (
-            <p className="channel-bio">{creator.bio}</p>
-          )}
+          {creator.bio && <p className="channel-bio">{creator.bio}</p>}
         </div>
 
+        {/* Subscribe Button */}
         {!isOwnChannel && (
           <button
-            className={`subscribe-btn ${creator.isSubscribed ? 'subscribed' : ''}`}
+            className={`subscribe-btn ${
+              creator.isSubscribed ? "subscribed" : ""
+            }`}
             onClick={handleSubscribe}
             disabled={subscribing}
           >
-            {subscribing ? (
-              <span className="btn-spinner"></span>
-            ) : (
-              creator.isSubscribed ? 'Subscribed' : 'Subscribe'
-            )}
+            {subscribing
+              ? "Processing..."
+              : creator.isSubscribed
+              ? "Subscribed"
+              : "Subscribe"}
           </button>
         )}
       </div>
@@ -163,20 +169,20 @@ export default function Channel({ username, onBack, onOpenVideo }) {
       {/* Tabs */}
       <div className="channel-tabs">
         <button
-          className={`tab-btn ${activeTab === 'videos' ? 'active' : ''}`}
-          onClick={() => setActiveTab('videos')}
+          className={`tab-btn ${activeTab === "videos" ? "active" : ""}`}
+          onClick={() => setActiveTab("videos")}
         >
           Videos
         </button>
         <button
-          className={`tab-btn ${activeTab === 'playlists' ? 'active' : ''}`}
-          onClick={() => setActiveTab('playlists')}
+          className={`tab-btn ${activeTab === "playlists" ? "active" : ""}`}
+          onClick={() => setActiveTab("playlists")}
         >
           Playlists
         </button>
         <button
-          className={`tab-btn ${activeTab === 'about' ? 'active' : ''}`}
-          onClick={() => setActiveTab('about')}
+          className={`tab-btn ${activeTab === "about" ? "active" : ""}`}
+          onClick={() => setActiveTab("about")}
         >
           About
         </button>
@@ -184,7 +190,7 @@ export default function Channel({ username, onBack, onOpenVideo }) {
 
       {/* Content */}
       <div className="channel-content">
-        {activeTab === 'videos' && (
+        {activeTab === "videos" && (
           <div className="videos-section">
             {videos.length === 0 ? (
               <div className="empty-state">
@@ -202,25 +208,29 @@ export default function Channel({ username, onBack, onOpenVideo }) {
                   >
                     <div className="thumbnail-wrapper">
                       <img
-                        src={video.thumbnail || "https://via.placeholder.com/320x180"}
+                        src={
+                          video.thumbnail ||
+                          "https://via.placeholder.com/320x180"
+                        }
                         alt={video.title}
                         className="video-thumb"
                         loading="lazy"
                       />
                       {video.duration && (
-                        <span className="duration-badge">{video.duration}</span>
+                        <span className="duration-badge">
+                          {video.duration}
+                        </span>
                       )}
-                      <div className="play-overlay">
-                        <div className="play-icon">▶</div>
-                      </div>
                     </div>
-                    
+
                     <div className="video-info">
                       <h4 className="video-title">{video.title}</h4>
                       <div className="video-meta">
-                        <span>{formatNumber(video.views || 0)} views</span>
+                        <span>{formatNumber(video.views)} views</span>
                         <span className="dot">•</span>
-                        <span>{new Date(video.createdAt).toLocaleDateString()}</span>
+                        <span>
+                          {new Date(video.createdAt).toLocaleDateString()}
+                        </span>
                       </div>
                     </div>
                   </div>
@@ -230,7 +240,7 @@ export default function Channel({ username, onBack, onOpenVideo }) {
           </div>
         )}
 
-        {activeTab === 'playlists' && (
+        {activeTab === "playlists" && (
           <div className="playlists-section">
             <div className="empty-state">
               <div className="empty-icon">📋</div>
@@ -240,29 +250,33 @@ export default function Channel({ username, onBack, onOpenVideo }) {
           </div>
         )}
 
-        {activeTab === 'about' && (
+        {activeTab === "about" && (
           <div className="about-section">
             <div className="about-card">
               <h3>Description</h3>
               <p>{creator.bio || "This user hasn't added a bio yet."}</p>
-              
+
               <div className="about-details">
                 <div className="detail-item">
                   <span className="detail-label">Joined</span>
                   <span className="detail-value">
-                    {new Date(creator.createdAt).toLocaleDateString('en-US', {
-                      month: 'long',
-                      year: 'numeric'
+                    {new Date(creator.createdAt).toLocaleDateString("en-US", {
+                      month: "long",
+                      year: "numeric",
                     })}
                   </span>
                 </div>
                 <div className="detail-item">
                   <span className="detail-label">Total Views</span>
-                  <span className="detail-value">{formatNumber(creator.totalViews || 0)}</span>
+                  <span className="detail-value">
+                    {formatNumber(creator.totalViews)}
+                  </span>
                 </div>
                 <div className="detail-item">
                   <span className="detail-label">Country</span>
-                  <span className="detail-value">{creator.country || 'Not specified'}</span>
+                  <span className="detail-value">
+                    {creator.country || "Not specified"}
+                  </span>
                 </div>
               </div>
             </div>
