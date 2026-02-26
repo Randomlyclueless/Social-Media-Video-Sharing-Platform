@@ -152,7 +152,11 @@ export default function Home({ onProfile, onUpload, onOpenVideo, onChannel }) {
     <div className="trizo-page">
       {/* Top Bar */}
       <header className="topbar">
-        <div className="topbar-left"></div>
+        <div className="topbar-left" onClick={() => setActiveCategory("All")}>
+  <div className="brand">
+    <span className="brand-name">Trizo</span>
+  </div>
+</div>
 
         <div className={`topbar-center ${showMobileSearch ? 'mobile-show' : ''}`}>
           <div className="search-wrap">
